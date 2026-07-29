@@ -79,27 +79,34 @@ function App() {
     }
 
     // Load from Firestore
-    const docRef = doc(db, 'invitations', 'main');
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const savedData = docSnap.data();
-        // Merge with initial data to prevent missing fields
-        setData(prev => ({
-          content: { ...prev.content, ...savedData.content },
-          layout: savedData.layout || prev.layout
-        }));
-      } else {
-        // Init firestore if empty
-        setDoc(docRef, INITIAL_DATA);
-      }
-      setLoading(false);
-    }, (error) => {
-      console.error("Error fetching data:", error);
-      setAppAlert("Gagal memuat data dari server.");
-      setLoading(false);
-    });
+    try {
+      const docRef = doc(db, 'invitations', 'main');
+      const unsubscribe = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const savedData = docSnap.data();
+          // Merge with initial data to prevent missing fields
+          setData(prev => ({
+            content: { ...prev.content, ...savedData.content },
+            layout: savedData.layout || prev.layout
+          }));
+        } else {
+          setDoc(docRef, INITIAL_DATA).catch(err => {
+            console.error("App.jsx: Error setting initial data:", err);
+          });
+        }
+        setLoading(false);
+      }, (error) => {
+        console.error("App.jsx: Error in onSnapshot:", error);
+        setAppAlert("Gagal memuat data dari server.");
+        setLoading(false);
+      });
 
-    return () => unsubscribe();
+      return () => {
+        unsubscribe();
+      };
+    } catch (err) {
+      console.error("App.jsx: Synchronous error in useEffect setup:", err);
+    }
   }, []);
 
   useEffect(() => {
