@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Aturan untuk dokumen undangan (invitations)
+    match /invitations/{document} {
+      // Siapapun dapat membaca data undangan (untuk diakses oleh tamu umum)
+      allow read: if true;
+      
+      // Admin dengan UID khusus memiliki akses penuh (baca, tulis, buat, hapus)
+      allow write: if request.auth != null && request.auth.uid == 'dBbwEehjDHMInM0AQUcUxqXCgeb2';
+      
+      // Tamu umum diizinkan melakukan pembaruan (update) khusus untuk dokumen 'main'
+      // guna mengirim ucapan/RSVP (wishes) ke dalam daftar undangan.
+      // Aturan ini memastikan layout dan konten inti tidak dapat diubah oleh publik.
+      allow update: if document == 'main' 
+        && request.resource.data.layout == resource.data.layout
+        && request.resource.data.content.groom == resource.data.content.groom
+        && request.resource.data.content.bride == resource.data.content.bride;
+    }
+  }
+}
