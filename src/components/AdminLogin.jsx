@@ -2,21 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Lock, Eye, EyeOff, X, Loader2 } from 'lucide-react';
 
 const AdminLogin = ({ isOpen, onClose, onLogin }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isShaking, setIsShaking] = useState(false);
-  const inputRef = useRef(null);
+  const emailInputRef = useRef(null);
 
   // Focus input on mount/open
   useEffect(() => {
     if (isOpen) {
+      setEmail('');
       setPassword('');
       setError('');
       setIsShaking(false);
       setTimeout(() => {
-        if (inputRef.current) inputRef.current.focus();
+        if (emailInputRef.current) emailInputRef.current.focus();
       }, 300);
     }
   }, [isOpen]);
@@ -25,32 +27,40 @@ const AdminLogin = ({ isOpen, onClose, onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email.trim()) {
+      setError('Email tidak boleh kosong!');
+      triggerShake(emailInputRef);
+      return;
+    }
     if (!password.trim()) {
       setError('Password tidak boleh kosong!');
-      triggerShake();
+      triggerShake(null);
       return;
     }
 
     setIsLoading(true);
     setError('');
 
-    // Simulate network delay for a high-end feel & UX feedback
-    setTimeout(() => {
-      const result = onLogin(password);
+    try {
+      const result = await onLogin(email, password);
       setIsLoading(false);
       if (!result.success) {
-        setError(result.message || 'Password salah!');
-        triggerShake();
+        setError(result.message || 'Login gagal!');
+        triggerShake(null);
       }
-    }, 800);
+    } catch (err) {
+      setIsLoading(false);
+      setError('Terjadi kesalahan koneksi.');
+      triggerShake(null);
+    }
   };
 
-  const triggerShake = () => {
+  const triggerShake = (refToFocus) => {
     setIsShaking(true);
     setTimeout(() => setIsShaking(false), 500);
-    if (inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
+    if (refToFocus && refToFocus.current) {
+      refToFocus.current.focus();
+      refToFocus.current.select();
     }
   };
 
@@ -91,19 +101,36 @@ const AdminLogin = ({ isOpen, onClose, onLogin }) => {
           </h2>
           <div className="floral-divider my-2"></div>
           <p className="text-gray-400 text-xs md:text-sm font-light mt-2 subheading-font italic">
-            Silakan masukkan kata sandi Anda untuk mengakses dashboard pengelolaan undangan.
+            Silakan masukkan email dan kata sandi Anda untuk mengakses dashboard pengelolaan undangan.
           </p>
         </div>
 
         {/* Form Section */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email Field */}
           <div className="relative">
             <label className="text-[10px] tracking-wider uppercase text-[#D4AF37]/80 block mb-2 font-semibold">
-              Kata Sandi Admin
+              Email Admin
+            </label>
+            <input
+              ref={emailInputRef}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
+              className="input-elegant w-full pl-2 text-center text-base tracking-wide placeholder-gray-600"
+              disabled={isLoading}
+              autoComplete="email"
+            />
+          </div>
+
+          {/* Password Field */}
+          <div className="relative">
+            <label className="text-[10px] tracking-wider uppercase text-[#D4AF37]/80 block mb-2 font-semibold">
+              Kata Sandi
             </label>
             <div className="relative flex items-center">
               <input
-                ref={inputRef}
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

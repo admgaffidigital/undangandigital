@@ -4,8 +4,9 @@ import PublicInvitation from './components/PublicInvitation';
 import AdminDashboard from './components/AdminDashboard';
 import CustomAlert from './components/CustomAlert';
 import AdminLogin from './components/AdminLogin';
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 const INITIAL_DATA = {
   content: {
@@ -136,6 +137,21 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (user && user.uid === 'dBbwEehjDHMInM0AQUcUxqXCgeb2') {
+        setIsAdmin(true);
+        setIsCoverOpen(false);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
+
+  useEffect(() => {
     if(data.content.musicUrl && audioRef.current) {
       audioRef.current.src = data.content.musicUrl;
       audioRef.current.load();
@@ -198,15 +214,42 @@ function App() {
     setIsLoginOpen(true);
   };
 
-  const handleAdminLoginSubmit = (pass) => {
-    if (pass === 'admin123') {
-      setIsAdmin(true);
-      setIsLoginOpen(false);
-      setIsCoverOpen(false); // Close cover if open
-      if (isPlaying) toggleMusic(); // Stop music when editing
-      return { success: true };
-    } else {
-      return { success: false, message: 'Password salah!' };
+  const handleAdminLoginSubmit = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      if (user.uid === 'dBbwEehjDHMInM0AQUcUxqXCgeb2') {
+        setIsAdmin(true);
+        setIsLoginOpen(false);
+        setIsCoverOpen(false); // Close cover if open
+        if (isPlaying) toggleMusic(); // Stop music when editing
+        return { success: true };
+      } else {
+        await signOut(auth);
+        return { success: false, message: 'Akses ditolak: Anda bukan administrator resmi.' };
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      let message = 'Gagal login. Periksa email dan password Anda.';
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        message = 'Email atau password salah!';
+      } else if (error.code === 'auth/invalid-email') {
+        message = 'Format email tidak valid!';
+      } else if (error.code === 'auth/too-many-requests') {
+        message = 'Terlalu banyak percobaan login. Silakan coba lagi nanti.';
+      }
+      return { success: false, message };
+    }
+  };
+
+  const handleAdminLogout = async () => {
+    try {
+      await signOut(auth);
+      setIsAdmin(false);
+      setAppAlert('Berhasil keluar dari dashboard.');
+    } catch (error) {
+      console.error("Logout error:", error);
+      setAppAlert('Gagal logout.');
     }
   };
 
@@ -237,7 +280,7 @@ function App() {
         <AdminDashboard 
           data={data} 
           setData={setData} 
-          onLogout={() => setIsAdmin(false)} 
+          onLogout={handleAdminLogout} 
           saveToFirebase={saveToFirebase}
           isSaving={isSaving}
           lastSaved={lastSaved}
