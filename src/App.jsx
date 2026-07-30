@@ -3,6 +3,7 @@ import CoverScreen from './components/CoverScreen';
 import PublicInvitation from './components/PublicInvitation';
 import AdminDashboard from './components/AdminDashboard';
 import CustomAlert from './components/CustomAlert';
+import AdminLogin from './components/AdminLogin';
 import { db } from './firebase';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 
@@ -60,6 +61,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [isCoverOpen, setIsCoverOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [appAlert, setAppAlert] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
@@ -169,13 +171,18 @@ function App() {
   };
 
   const handleAdminLogin = () => {
-    const pass = prompt('Masukkan password admin (default: admin123):');
+    setIsLoginOpen(true);
+  };
+
+  const handleAdminLoginSubmit = (pass) => {
     if (pass === 'admin123') {
       setIsAdmin(true);
+      setIsLoginOpen(false);
       setIsCoverOpen(false); // Close cover if open
-      if(isPlaying) toggleMusic(); // Stop music when editing
-    } else if (pass !== null) {
-      setAppAlert('Password salah!');
+      if (isPlaying) toggleMusic(); // Stop music when editing
+      return { success: true };
+    } else {
+      return { success: false, message: 'Password salah!' };
     }
   };
 
@@ -194,6 +201,13 @@ function App() {
       
       {/* Audio Element Hidden */}
       <audio ref={audioRef} loop preload="auto" />
+
+      {/* Admin Login Modal */}
+      <AdminLogin 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)} 
+        onLogin={handleAdminLoginSubmit} 
+      />
 
       {isAdmin ? (
         <AdminDashboard 
