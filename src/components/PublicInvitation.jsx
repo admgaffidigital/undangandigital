@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FadeInSection from './FadeInSection';
 import MagicalBackground from './MagicalBackground';
 import { copyToClipboard } from '../utils';
+import { JavaneseCorner, JavaneseGunungan, JavaneseFrame } from './JavaneseOrnaments';
 
 const useCountdown = (targetDate) => {
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
@@ -31,16 +32,14 @@ const PublicInvitation = ({ data, onAdminClick, onWishSubmit, isPlaying, toggleM
             <div className="absolute inset-0 bg-black/40"></div>
           </div>
           
-          {data.content.cornerUrl && (
-            <>
-              <img src={data.content.cornerUrl} className="absolute top-4 left-4 sm:top-6 sm:left-6 w-20 sm:w-24 md:w-36 h-20 sm:h-24 md:h-36 object-contain z-10 opacity-80 drop-shadow-[0_0_12px_rgba(212,175,55,0.4)]" alt="corner-left" />
-              <img src={data.content.cornerUrl} className="absolute top-4 right-4 sm:top-6 sm:right-6 w-20 sm:w-24 md:w-36 h-20 sm:h-24 md:h-36 object-contain z-10 opacity-80 drop-shadow-[0_0_12px_rgba(212,175,55,0.4)] transform scale-x-[-1]" alt="corner-right" />
-            </>
-          )}
+          <>
+            <JavaneseCorner className="absolute top-4 left-4 sm:top-6 sm:left-6 w-20 sm:w-24 md:w-36 h-20 sm:h-24 md:h-36 z-10 opacity-80 drop-shadow-[0_0_12px_rgba(212,175,55,0.4)]" />
+            <JavaneseCorner className="absolute top-4 right-4 sm:top-6 sm:right-6 w-20 sm:w-24 md:w-36 h-20 sm:h-24 md:h-36 z-10 opacity-80 drop-shadow-[0_0_12px_rgba(212,175,55,0.4)] transform scale-x-[-1]" />
+          </>
 
           <div className="relative z-10 w-full flex flex-col items-center mt-12 md:mt-0 px-2 sm:px-4 mx-auto">
             <FadeInSection delay={100} className="w-full flex flex-col items-center text-center">
-              {data.content.gununganUrl && <img src={data.content.gununganUrl} className="w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 object-contain mb-6 sm:mb-8 mx-auto opacity-90 drop-shadow-[0_5px_15px_rgba(212,175,55,0.5)] block" alt="gunungan" />}
+              <JavaneseGunungan className="w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 object-contain mb-6 sm:mb-8 mx-auto opacity-90 drop-shadow-[0_5px_15px_rgba(212,175,55,0.5)] block" />
               <h3 className="text-[9px] sm:text-[10px] md:text-xs mb-4 sm:mb-6 tracking-[0.3em] sm:tracking-[0.4em] uppercase font-bold text-[#D4AF37] text-center mx-auto block drop-shadow-md">{data.content.titlePrefix || 'Pawiwahan Ageng'}</h3>
             </FadeInSection>
             
@@ -87,7 +86,7 @@ const PublicInvitation = ({ data, onAdminClick, onWishSubmit, isPlaying, toggleM
                 <FadeInSection direction="right" delay={100} className="w-full flex flex-col items-center">
                   <div className="text-center flex flex-col items-center w-full group">
                     <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 mb-6 sm:mb-8 flex items-center justify-center mx-auto transition-transform duration-700 group-hover:-translate-y-2">
-                      {data.content.frameUrl && <img src={data.content.frameUrl} className="absolute inset-0 w-full h-full object-contain z-20 scale-[1.08] drop-shadow-[0_0_15px_rgba(212,175,55,0.3)] pointer-events-none" alt="frame" />}
+                      <JavaneseFrame className="absolute inset-0 w-full h-full object-contain z-20 scale-[1.08] drop-shadow-[0_0_15px_rgba(212,175,55,0.3)] pointer-events-none" />
                       <div className="w-[85%] h-[85%] rounded-full z-10 border border-[#D4AF37]/30 bg-black shadow-2xl overflow-hidden">
                         <img src={data.content.groomImg} className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" alt={data.content.groom} />
                       </div>
@@ -102,7 +101,7 @@ const PublicInvitation = ({ data, onAdminClick, onWishSubmit, isPlaying, toggleM
                 <FadeInSection direction="left" delay={100} className="w-full flex flex-col items-center">
                   <div className="text-center flex flex-col items-center w-full group">
                     <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 mb-6 sm:mb-8 flex items-center justify-center mx-auto transition-transform duration-700 group-hover:-translate-y-2">
-                      {data.content.frameUrl && <img src={data.content.frameUrl} className="absolute inset-0 w-full h-full object-contain z-20 scale-[1.08] drop-shadow-[0_0_15px_rgba(212,175,55,0.3)] pointer-events-none" alt="frame" />}
+                      <JavaneseFrame className="absolute inset-0 w-full h-full object-contain z-20 scale-[1.08] drop-shadow-[0_0_15px_rgba(212,175,55,0.3)] pointer-events-none" />
                       <div className="w-[85%] h-[85%] rounded-full z-10 border border-[#D4AF37]/30 bg-black shadow-2xl overflow-hidden">
                         <img src={data.content.brideImg} className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" alt={data.content.bride} />
                       </div>
@@ -121,7 +120,7 @@ const PublicInvitation = ({ data, onAdminClick, onWishSubmit, isPlaying, toggleM
               <div className="grid md:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 w-full px-2 sm:px-0">
                 <FadeInSection direction="up" delay={100} className="w-full flex flex-col items-center">
                   <div className="glass-card p-8 sm:p-10 md:p-12 text-center flex flex-col items-center relative overflow-hidden group w-full rounded-2xl md:rounded-[3rem]">
-                    {data.content.gununganUrl && <img src={data.content.gununganUrl} className="w-20 sm:w-28 h-20 sm:h-28 object-contain mb-4 opacity-10 absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 block pointer-events-none" alt="bg-ornament" />}
+                    <JavaneseGunungan className="w-20 sm:w-28 h-20 sm:h-28 object-contain mb-4 opacity-10 absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 block pointer-events-none" />
                     <h3 className="text-xl sm:text-2xl md:text-3xl heading-font mb-4 sm:mb-6 relative z-10 pt-2 sm:pt-4 tracking-wider text-[#FDFBF7]">{data.content.event1Name}</h3>
                     <div className="floral-divider mb-4 sm:mb-6 opacity-80 w-24 sm:w-32 scale-75 sm:scale-100"></div>
                     <p className="text-base sm:text-lg mb-2 font-bold accent-text tracking-widest block mx-auto">{data.content.event1Time}</p>
@@ -132,7 +131,7 @@ const PublicInvitation = ({ data, onAdminClick, onWishSubmit, isPlaying, toggleM
                 </FadeInSection>
                 <FadeInSection direction="up" delay={200} className="w-full flex flex-col items-center">
                   <div className="glass-card p-8 sm:p-10 md:p-12 text-center flex flex-col items-center relative overflow-hidden group w-full rounded-2xl md:rounded-[3rem]">
-                    {data.content.gununganUrl && <img src={data.content.gununganUrl} className="w-20 sm:w-28 h-20 sm:h-28 object-contain mb-4 opacity-10 absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/4 block pointer-events-none" alt="bg-ornament" />}
+                    <JavaneseGunungan className="w-20 sm:w-28 h-20 sm:h-28 object-contain mb-4 opacity-10 absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/4 block pointer-events-none" />
                     <h3 className="text-xl sm:text-2xl md:text-3xl heading-font mb-4 sm:mb-6 relative z-10 pt-2 sm:pt-4 tracking-wider text-[#FDFBF7]">{data.content.event2Name}</h3>
                     <div className="floral-divider mb-4 sm:mb-6 opacity-80 w-24 sm:w-32 scale-75 sm:scale-100"></div>
                     <p className="text-base sm:text-lg mb-2 font-bold accent-text tracking-widest block mx-auto">{data.content.event2Time}</p>
@@ -264,7 +263,7 @@ const PublicInvitation = ({ data, onAdminClick, onWishSubmit, isPlaying, toggleM
           if (item.id === 'closing') return (
             <section key={item.id} className="py-24 sm:py-36 px-4 sm:px-6 max-w-3xl mx-auto text-center flex flex-col items-center">
               <FadeInSection className="w-full flex flex-col items-center text-center">
-                {data.content.gununganUrl && <img src={data.content.gununganUrl} className="w-20 sm:w-24 h-20 sm:h-24 object-contain mx-auto mb-8 sm:mb-12 opacity-80 drop-shadow-[0_0_10px_rgba(212,175,55,0.5)] block" alt="closing-ornament" />}
+                <JavaneseGunungan className="w-20 sm:w-24 h-20 sm:h-24 object-contain mx-auto mb-8 sm:mb-12 opacity-80 drop-shadow-[0_0_10px_rgba(212,175,55,0.5)] block" />
                 <p className="text-xs sm:text-sm md:text-base font-light leading-loose mb-12 sm:mb-16 opacity-70 text-gray-200 block mx-auto text-center px-4">"{data.content.closing}"</p>
                 <h2 className="text-4xl sm:text-5xl md:text-6xl heading-font mb-6 sm:mb-8 tracking-[0.1em] gold-text-gradient block mx-auto text-center px-2">{data.content.closingTitle}</h2>
                 <p className="opacity-50 tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[8px] sm:text-[9px] md:text-[10px] font-bold block mx-auto text-center px-4">{data.content.closingGreeting}</p>

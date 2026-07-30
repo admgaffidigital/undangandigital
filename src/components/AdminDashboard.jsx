@@ -239,15 +239,6 @@ const AdminDashboard = ({ data, setData, onLogout, saveToFirebase, isSaving, las
                 <FileDropzone label="Lagu / Backsound (URL MP3)" value={data.content.musicUrl} onFileRead={(val)=>updateContent('musicUrl', val)} accept="audio/*" typeDesc="Lagu (MP3)" onError={setAppAlert} />
               </div>
             </div>
-            
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">✨ Ornamen (Khusus Tema Keraton)</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FileDropzone label="Sudut (Corner)" value={data.content.cornerUrl} onFileRead={(val)=>updateContent('cornerUrl', val)} accept="image/png,image/svg+xml" typeDesc="PNG Transparan" isOrnament={true} onError={setAppAlert} />
-                <FileDropzone label="Gunungan (Center)" value={data.content.gununganUrl} onFileRead={(val)=>updateContent('gununganUrl', val)} accept="image/png,image/svg+xml" typeDesc="PNG Transparan" isOrnament={true} onError={setAppAlert} />
-                <FileDropzone label="Bingkai Foto (Frame)" value={data.content.frameUrl} onFileRead={(val)=>updateContent('frameUrl', val)} accept="image/png,image/svg+xml" typeDesc="PNG Transparan" isOrnament={true} onError={setAppAlert} />
-              </div>
-            </div>
 
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex justify-between items-center mb-6">
