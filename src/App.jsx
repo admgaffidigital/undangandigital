@@ -57,8 +57,24 @@ const INITIAL_DATA = {
 };
 
 function App() {
-  const [data, setData] = useState(INITIAL_DATA);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(() => {
+    try {
+      const cached = localStorage.getItem('undangan_cache');
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch (e) {
+      console.error("Gagal membaca cache:", e);
+    }
+    return INITIAL_DATA;
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      return !localStorage.getItem('undangan_cache');
+    } catch (e) {
+      return true;
+    }
+  });
   const [isCoverOpen, setIsCoverOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -87,10 +103,18 @@ function App() {
         if (docSnap.exists()) {
           const savedData = docSnap.data();
           // Merge with initial data to prevent missing fields
-          setData(prev => ({
-            content: { ...prev.content, ...savedData.content },
-            layout: savedData.layout || prev.layout
-          }));
+          setData(prev => {
+            const merged = {
+              content: { ...prev.content, ...savedData.content },
+              layout: savedData.layout || prev.layout
+            };
+            try {
+              localStorage.setItem('undangan_cache', JSON.stringify(merged));
+            } catch (e) {
+              console.error("Gagal menulis cache:", e);
+            }
+            return merged;
+          });
         } else {
           setDoc(docRef, INITIAL_DATA).catch(err => {
             console.error("App.jsx: Error setting initial data:", err);
